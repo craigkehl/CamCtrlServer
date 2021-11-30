@@ -10,6 +10,6 @@ router.get('/zoom/:speed', userControls.zoom)
 
 router.get('/move', userControls.moveVarSpeed)
 
-router.get('/obs', () => testConnection)
+router.get('/sacramentPic', userControls.)
 
 export default router
