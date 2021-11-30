@@ -1,17 +1,20 @@
-import express, { Application } from 'express';
+import express, { Application } from 'express'
 // import path from 'path'
 // import session from 'express-session'
-import Cors from 'cors';
-import userControlRoutes from './routes/userControl';
+import Cors from 'cors'
+import dotenv from 'dotenv'
 
-const app: Application = express();
+import userControlRoutes from './routes/userControl'
+
+const app: Application = express()
 
 // app.set('view engine', 'ejs')
 // app.set('views', 'views')
-app.use(Cors());
+app.use(Cors())
+app.use(dotenv.config)
 
-app.use(userControlRoutes);
+app.use(userControlRoutes)
 
 app.listen(5000, () => {
-  console.log('listening on port 5000');
-});
+  console.log('listening on port 5000')
+})
