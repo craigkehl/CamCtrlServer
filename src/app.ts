@@ -11,7 +11,6 @@ const app: Application = express()
 // app.set('view engine', 'ejs')
 // app.set('views', 'views')
 app.use(Cors())
-app.use(dotenv.config)
 
 app.use(userControlRoutes)
 

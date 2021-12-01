@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import Camera from '../Models/Camera'
 import port from '../util/comport'
+import { setCurrentScene as sendScene } from '../Models/Obs'
 
 const camera = new Camera()
 
@@ -55,4 +56,15 @@ export const moveVarSpeed = (req: Request, res: Response): void => {
       Message: `The pan and tilt speeds of: ${pan} and ${tilt} have been called and set`,
     })
   })
+}
+
+export const setCurrentScene = (req: Request, res: Response): void => {
+  console.log('Request received')
+  const params = req.params
+  const name = params.name
+  const message = sendScene(name)
+  res.status(200).json({
+    Message: message,
+  })
+  console.log(message)
 }
