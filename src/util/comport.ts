@@ -1,6 +1,6 @@
 import SerialPort from 'serialport'
 
-const port = new SerialPort('/dev/tty.usbserial-1440', {
+const port = new SerialPort('COM5', {
   baudRate: 9600,
   dataBits: 8,
   parity: 'none',

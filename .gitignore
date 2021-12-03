@@ -2,4 +2,6 @@ node_modules
 .env
 .vscode
 dist
+server.cert
+server.key
 
