@@ -22,7 +22,7 @@ export const testConnection = (): void => {
 
 export const setCurrentScene = (name: string): any => {
   obs
-    .connect({ address: 'localhost:4444', password: 'pludo12310!' })
+    .connect({ address: 'localhost:4444', password: process.env.OBS_PASSWORD })
     .then(() => {
       console.log(`Success! We're connected & authenticated.`)
 
