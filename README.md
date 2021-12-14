@@ -3,7 +3,7 @@ Visca Camera Controller - OBS Studio
 
 <p>This server enables simple control of a Visca controlled camera system <a href="https://www.mylumens.com/Download/VC-A51S_DataSheet_English(LEI)-2017-0921.pdf">(Lumens VC-A51s in my case)</a> and <a href="https://github.com/obs-websocket-community-projects/obs-websocket-js/tree/v4">WebSocket control</a> of <a href="https://obsproject.com/">OBS Studio.</a></p>
 
-#Together with this React frontend application the user can:
+#Together with this <a href="https://github.com/craigkehl/ts-cam-app">React frontend application</a> the user can:
 
 <ul>
   <li>Control the camera</li>
