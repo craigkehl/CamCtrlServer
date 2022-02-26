@@ -1,20 +1,20 @@
-import { Router } from 'express'
-import * as userControls from '../Controllers/userControls'
+import { Router } from 'express';
+import * as userControls from '../Controllers/userControls';
 
-const router = Router()
+const router = Router();
 
 router.use((req, res, next) => {
-  console.log(
-    "in router"
-  )
-  next()
-})
-router.get('/preset/:presetId', userControls.recallPresetId)
+  console.log("in router");
+  next();
+});
+router.get('/preset/:presetId', userControls.recallPresetId);
 
-router.get('/zoom/:speed', userControls.zoom)
+router.post('/preset', userControls.setPresetId);
 
-router.get('/move', userControls.moveVarSpeed)
+router.get('/zoom/:speed', userControls.zoom);
 
-router.get('/scene/:name', userControls.setCurrentScene)
+router.get('/move', userControls.moveVarSpeed);
 
-export default router
+router.get('/scene/:name', userControls.setCurrentScene);
+
+export default router;
