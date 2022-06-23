@@ -2,7 +2,7 @@ class Camera {
   panSpeed: number;
   tiltSpeed: number;
 
-  constructor(panSpeed: number = 0x0c, tiltSpeed: number = 0x09) {
+  constructor(panSpeed = 0x0c, tiltSpeed = 0x09) {
     this.panSpeed = panSpeed;
     this.tiltSpeed = tiltSpeed;
   }
