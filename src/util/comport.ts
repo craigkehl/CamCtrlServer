@@ -1,6 +1,7 @@
 import SerialPort from 'serialport';
+require('dotenv').config();
 
-const CAM_PORT: string = process.env.CAM_SERIAL_PORT || '/dev/ttyUSB0)'
+const CAM_PORT: string = process.env.CAM_SERIAL_PORT || 'COM3'
 
 
 
