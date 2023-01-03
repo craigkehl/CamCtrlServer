@@ -1,39 +1,51 @@
-import OBSWebSocket from 'obs-websocket-js'
+import OBSWebSocket, {
+  EventSubscription,
+  OBSEventTypes,
+  OBSRequestTypes,
+  OBSResponseTypes,
+} from 'obs-websocket-js';
 
-const obs = new OBSWebSocket()
+const obs = new OBSWebSocket();
 
-export const testConnection = (): void => {
-  obs
-    .connect({ address: 'localhost:4444', password: process.env.OBS_PASSWORD })
-    .then(() => {
-      console.log(`Success! We're connected & authenticated.`)
+const ADDRESS = process.env.OBS_ADDRESS;
+const PASSWORD = process.env.OBS_PASSWORD;
 
-      return obs.send('GetSceneList')
-    })
-    .then((data) => {
-      console.log(`${data.scenes.length} Available Scenes!`)
+let connected = false;
 
-      data.scenes.forEach((scene) => {
-        console.log(scene)
-      })
-    })
-  obs.disconnect
+async function connect(): Promise<void> {
+  try {
+    const { obsWebSocketVersion, negotiatedRpcVersion } = await obs.connect(
+      ADDRESS,
+      PASSWORD
+    );
+    console.log(
+      `Connected to server ${obsWebSocketVersion} (using RPC ${negotiatedRpcVersion})`
+    );
+  } catch (error: any) {
+    console.error('Failed to connect', error.code, error.message);
+  }
+  connected = true;
 }
 
-export const setCurrentScene = (name: string): any => {
-  obs
-    .connect({ address: 'localhost:4444', password: process.env.OBS_PASSWORD })
-    .then(() => {
-      console.log(`Success! We're connected & authenticated.`)
-
-      return obs.send('SetCurrentScene', { 'scene-name': name })
-    })
-    .then((data) => {
-      console.log(data)
-      return data
-    })
-    .catch((err) => {
-      console.log(err.message)
-    })
-  obs.disconnect
+export async function getCurrentScene(): Promise<Object> {
+  const { currentProgramSceneName } = await obs.call('GetCurrentProgramScene');
+  return currentProgramSceneName;
 }
+
+export async function setCurrentScene(name: string): Promise<void> {
+  console.log('scene: ' + name);
+  return await obs.call('SetCurrentProgramScene', { sceneName: name });
+}
+
+obs.on('CurrentProgramSceneChanged', event => {
+  console.log('Current scene changed to ' + event.sceneName);
+});
+
+obs.once('ExitStarted', () => {
+  console.log('OBS started shutdown');
+
+  // Just for example, not necessary should you want to reuse this instance by re-connect()
+  // obs.off('CurrentProgramSceneChanged', onCurrentProgramSceneChanged);
+});
+
+connect();

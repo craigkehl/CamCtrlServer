@@ -1,7 +1,9 @@
 import SerialPort from 'serialport';
+require('dotenv').config();
 
-const CAM_PORT: string = process.env.CAM_SERIAL_PORT || 'COM8'
-// on mac /dev/ttyUSB0
+const CAM_PORT: string = process.env.CAM_SERIAL_PORT || 'COM3'
+
+// const port = new SerialPort('/dev/tty.usb0', {
 
 const port = new SerialPort(CAM_PORT, {
   baudRate: 9600,
