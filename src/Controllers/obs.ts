@@ -11,6 +11,6 @@ export const setCurrentScene = (req: Request, res: Response): void => {
   console.log(message);
 };
 
-export const onSceneChange = (name) => {
+export const onSceneChange = (name: String) => {
   console.log(`scene: ${name}`)
 }
