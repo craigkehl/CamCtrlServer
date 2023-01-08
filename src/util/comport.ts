@@ -2,6 +2,7 @@ import SerialPort from 'serialport';
 require('dotenv').config();
 
 const CAM_PORT: string = process.env.CAM_SERIAL_PORT || 'COM3'
+console.log(CAM_PORT)
 
 // const port = new SerialPort('/dev/tty.usb0', {
 

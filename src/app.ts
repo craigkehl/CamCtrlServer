@@ -1,5 +1,3 @@
-// import path from 'path'
-// import fs, { readFileSync } from 'fs'
 import express, { Application } from 'express';
 import Cors from 'cors';
 
@@ -13,9 +11,6 @@ const app: Application = express();
 
 app.use(Cors());
 app.use(express.json());
-
-// const privateKey = readFileSync(path.resolve(__dirname, './SSL/server.key'))
-// const certificate = readFileSync(path.resolve(__dirname, './SSL/server.cert'))
 
 app.use(userControlRoutes);
 
