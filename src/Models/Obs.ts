@@ -5,6 +5,10 @@ import OBSWebSocket, {
   OBSResponseTypes,
 } from 'obs-websocket-js';
 
+import { onSceneChange } from '../Controllers/obs';
+
+
+
 const obs = new OBSWebSocket();
 
 const ADDRESS = process.env.OBS_ADDRESS;
@@ -38,7 +42,8 @@ export async function setCurrentScene(name: string): Promise<void> {
 }
 
 obs.on('CurrentProgramSceneChanged', event => {
-  console.log('Current scene changed to ' + event.sceneName);
+  onSceneChange(event.sceneName)
+
 });
 
 obs.once('ExitStarted', () => {
