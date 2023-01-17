@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"path": "../.."
+		},
+		{
+			"name": "ts-cam-app2",
+			"path": "../../../ts-cam-app2"
+		}
+	],
+	"settings": {}
+}
