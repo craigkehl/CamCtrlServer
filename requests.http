@@ -1,2 +1,64 @@
 ### OBS connection
 GET ws://localhost:4455
+
+// Power
+### projector power on
+Get http://localhost:4000/proj/power/on
+ 
+### projector power off 
+Get http://localhost:4000/proj/power/off
+
+
+// Screen blank
+### projector blank on 
+Get http://localhost:4000/proj/blank/on
+
+### projector blank off 
+Get http://localhost:4000/proj/blank/off
+
+
+// remote key
+### projector remote-key menu  
+Get http://localhost:4000/proj/remote-key/menu
+
+### projector remote-key exit
+Get http://localhost:4000/proj/remote-key/exit
+
+### projector remote-key bottom
+Get http://localhost:4000/proj/remote-key/bottom
+
+### projector remote-key left
+Get http://localhost:4000/proj/remote-key/left
+
+### projector remote-key right
+Get http://localhost:4000/proj/remote-key/right
+
+### projector remote-key source
+Get http://localhost:4000/proj/remote-key/source
+
+### projector remote-key enter
+Get http://localhost:4000/proj/remote-key/enter
+
+### projector remote-key auto
+Get http://localhost:4000/proj/remote-key/auto
+
+
+// input source
+### projector source comp1
+Get http://localhost:4000/proj/source/comp1
+
+### projector source hdmi1
+Get http://localhost:4000/proj/source/hdmi1
+
+### projector source hdmi2
+Get http://localhost:4000/proj/source/hdmi2
+
+### projector source compositeVideo
+Get http://localhost:4000/proj/source/compositeVideo
+
+### projector source sVideo
+Get http://localhost:4000/proj/source/sVideo
+
+### projector source hdBaseT
+Get http://localhost:4000/proj/source/hdBaseT
+
