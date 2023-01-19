@@ -4,4 +4,4 @@ node_modules
 dist
 server.cert
 server.key
-
+.code-workspace

@@ -4,6 +4,7 @@ import OBSWebSocket, {
   OBSRequestTypes,
   OBSResponseTypes,
 } from 'obs-websocket-js';
+require('dotenv').config();
 
 import { onSceneChange } from '../Controllers/obs';
 
@@ -11,8 +12,10 @@ import { onSceneChange } from '../Controllers/obs';
 
 const obs = new OBSWebSocket();
 
-const ADDRESS = process.env.OBS_ADDRESS;
+const ADDRESS = process.env.OBS_ADDRESS || 'ws://192.168.108.2:4455';
 const PASSWORD = process.env.OBS_PASSWORD;
+console.log(ADDRESS)
+console.log(PASSWORD)
 
 let connected = false;
 

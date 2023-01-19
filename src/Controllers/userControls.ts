@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import Camera from '../Models/Camera';
-import port from '../util/comport';
+import { camPort } from '../util/comport';
 import { setCurrentScene as sendScene } from '../Models/Obs';
 
 const camera = new Camera();
@@ -9,7 +9,7 @@ export const recallPresetId = (req: Request, res: Response): void => {
   const params = req.params;
   const presetId = params.presetId;
   const command = camera.presetGet(parseInt(presetId));
-  port.write(command, function (err) {
+  camPort.write(command, function ( err) {
     if (err) {
       return console.log('Error on write: ', err.message);
     }
@@ -23,7 +23,7 @@ export const recallPresetId = (req: Request, res: Response): void => {
 export const setPresetId = (req: Request, res: Response): void => {
   const presetId = req.body.presetId;
   const command = camera.presetSet(parseInt(presetId));
-  port.write(command, function (err) {
+  camPort.write(command, function (err) {
     if (err) {
       return console.log('Error on write: ', err.message);
     }
@@ -38,7 +38,7 @@ export const zoom = (req: Request, res: Response): void => {
   const params = req.params;
   const speed = params.speed;
   const command = camera.zoom(parseInt(speed));
-  port.write(command, function (err) {
+  camPort.write(command, function (err) {
     if (err) {
       return console.log('Error on write: ', err.message);
     }
@@ -56,7 +56,7 @@ export const moveVarSpeed = (req: Request, res: Response): void => {
     parseInt(pan as string),
     parseInt(tilt as string)
   );
-  port.write(command, function (err) {
+  camPort.write(command, function (err) {
     if (err) {
       return console.log('Error on write: ', err.message);
     }
