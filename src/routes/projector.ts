@@ -8,12 +8,12 @@ projRouter.use((req, res, next) => {
   next()
 })
 
-projRouter.get('/proj/power/:reqCommand', projectorControls.setPower)
+projRouter.get('/power/:reqCommand', projectorControls.setPower)
 
-projRouter.get('/proj/blank/:reqCommand', projectorControls.setBlank)
+projRouter.get('/blank/:reqCommand', projectorControls.setBlank)
 
-projRouter.get('/proj/remote-key/:reqCommand', projectorControls.setRemoteKey)
+projRouter.get('/remote-key/:reqCommand', projectorControls.setRemoteKey)
 
-projRouter.get('/proj/source/:reqCommand', projectorControls.setSource)
+projRouter.get('/source/:reqCommand', projectorControls.setSource)
 
 export default projRouter

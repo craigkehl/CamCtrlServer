@@ -1,6 +1,8 @@
 class Projector {
-  
-  readonly CMD_BASE: number[] = [0x06, 0x14, 0x04, 0x00, 0x34];
+  readonly CMD_TYPE_SEND: number[] = [0X06]  
+  readonly CMD_TYPE_REMOTE: number[] = [0X02]
+  readonly CMD_BASE: number[] = [0x14, 0x00, 0x04, 0x00, 0x34];
+  readonly STATUS_BASE: number[] = [0x07, 0x14, 0x00, 0x05, 0x00, 0x034, 0x00, 0x00]
 
   readonly CMD = {
     BLANK: {
@@ -39,8 +41,6 @@ class Projector {
       hd_base_t: [0x13, 0x01, 0x0C, 0x6C],
     }
   }
-
-  readonly STATUS_BASE: number[] = [0x07, 0x14, 0x00, 0x05, 0x00, 0x034, 0x00, 0x00]
   
   readonly STATUS = {
     BLANK: [0x12, 0x09, 0x68],
@@ -50,95 +50,97 @@ class Projector {
 
   //#region commands
   powerOn(): number[] {
-    return [...this.CMD_BASE, ...this.CMD.POWER.on]
+    return [...this.CMD_TYPE_SEND, ...this.CMD_BASE, ...this.CMD.POWER.on]
   }
 
   powerOff(): number[] {
-    return [...this.CMD_BASE, ...this.CMD.POWER.off]
+    return [...this.CMD_TYPE_SEND, ...this.CMD_BASE, ...this.CMD.POWER.off]
   }
 
   blankOn(): number[] {
-    return [...this.CMD_BASE, ...this.CMD.BLANK.on]
+    return [...this.CMD_TYPE_SEND, ...this.CMD_BASE, ...this.CMD.BLANK.on]
   }
 
   blankOff(): number[] {
-    return [...this.CMD_BASE, ...this.CMD.BLANK.off]
+    return [...this.CMD_TYPE_SEND, ...this.CMD_BASE, ...this.CMD.BLANK.off]
   }
 
   muteOn(): number[] {
-    return [...this.CMD_BASE, ...this.CMD.MUTE.on]
+    return [...this.CMD_TYPE_SEND, ...this.CMD_BASE, ...this.CMD.MUTE.on]
   }
 
   muteOff(): number[] {
-    return [...this.CMD_BASE, ...this.CMD.MUTE.off]
+    return [...this.CMD_TYPE_SEND, ...this.CMD_BASE, ...this.CMD.MUTE.off]
   }
 
   volumeIncrease(): number[] {
-    return [...this.CMD_BASE, ...this.CMD.VOLUME.increase]
+    return [...this.CMD_TYPE_SEND, ...this.CMD_BASE, ...this.CMD.VOLUME.increase]
   }
 
   volumeDecrease(): number[] {
-    return [...this.CMD_BASE, ...this.CMD.VOLUME.decrease]
+    return [...this.CMD_TYPE_SEND, ...this.CMD_BASE, ...this.CMD.VOLUME.decrease]
   }
-
+  //#endregion
+  
+  //#region remote keys
   remoteKeyMenu(): number[] {
-    return [...this.CMD_BASE, ...this.CMD.REMOTE_KEY.menu]
+    return [...this.CMD_TYPE_REMOTE, ...this.CMD_BASE, ...this.CMD.REMOTE_KEY.menu]
   }
 
   remoteKeyExit(): number[] {
-    return [...this.CMD_BASE, ...this.CMD.REMOTE_KEY.exit]
+    return [...this.CMD_TYPE_REMOTE, ...this.CMD_BASE, ...this.CMD.REMOTE_KEY.exit]
   }
 
   remoteKeyTop(): number[] {
-    return [...this.CMD_BASE, ...this.CMD.REMOTE_KEY.top]
+    return [...this.CMD_TYPE_REMOTE, ...this.CMD_BASE, ...this.CMD.REMOTE_KEY.top]
   }
 
   remoteKeyBottom(): number[] {
-    return [...this.CMD_BASE, ...this.CMD.REMOTE_KEY.bottom]
+    return [...this.CMD_TYPE_REMOTE, ...this.CMD_BASE, ...this.CMD.REMOTE_KEY.bottom]
   }
 
   remoteKeyLeft(): number[] {
-    return [...this.CMD_BASE, ...this.CMD.REMOTE_KEY.left]
+    return [...this.CMD_TYPE_REMOTE, ...this.CMD_BASE, ...this.CMD.REMOTE_KEY.left]
   }
 
   remoteKeyRight(): number[] {
-    return [...this.CMD_BASE, ...this.CMD.REMOTE_KEY.right]
+    return [...this.CMD_TYPE_REMOTE, ...this.CMD_BASE, ...this.CMD.REMOTE_KEY.right]
   }
 
   remoteKeySource(): number[] {
-    return [...this.CMD_BASE, ...this.CMD.REMOTE_KEY.source]
+    return [...this.CMD_TYPE_REMOTE, ...this.CMD_BASE, ...this.CMD.REMOTE_KEY.source]
   }
 
   remoteKeyEnter(): number[] {
-    return [...this.CMD_BASE, ...this.CMD.REMOTE_KEY.enter]
+    return [...this.CMD_TYPE_REMOTE, ...this.CMD_BASE, ...this.CMD.REMOTE_KEY.enter]
   }
 
   remoteKeyAuto(): number[] {
-    return [...this.CMD_BASE, ...this.CMD.REMOTE_KEY.auto]
+    return [...this.CMD_TYPE_REMOTE, ...this.CMD_BASE, ...this.CMD.REMOTE_KEY.auto]
   }
 
   sourceComp1(): number[] {
-    return [...this.CMD_BASE, ...this.CMD.SOURCE.comp1]
+    return [...this.CMD_TYPE_SEND, ...this.CMD_BASE, ...this.CMD.SOURCE.comp1]
   }
 
   sourceHdmi1(): number[] {
-    return [...this.CMD_BASE, ...this.CMD.SOURCE.hdmi1]
+    return [...this.CMD_TYPE_SEND, ...this.CMD_BASE, ...this.CMD.SOURCE.hdmi1]
   }
 
   sourceHdmi2(): number[] {
-    return [...this.CMD_BASE, ...this.CMD.SOURCE.hdmi2]
+    return [...this.CMD_TYPE_SEND, ...this.CMD_BASE, ...this.CMD.SOURCE.hdmi2]
   }
 
   sourceCompositeVideo(): number[] {
-    return [...this.CMD_BASE, ...this.CMD.SOURCE.composite_video]
+    return [...this.CMD_TYPE_SEND, ...this.CMD_BASE, ...this.CMD.SOURCE.composite_video]
   }
 
   sourceSVideo(): number[] {
-    return [...this.CMD_BASE, ...this.CMD.SOURCE.s_video]
+    return [...this.CMD_TYPE_SEND, ...this.CMD_BASE, ...this.CMD.SOURCE.s_video]
   }
 
   sourceHdBaseT(): number[] {
-    return [...this.CMD_BASE, ...this.CMD.SOURCE.hd_base_t]
+    return [...this.CMD_TYPE_SEND, ...this.CMD_BASE, ...this.CMD.SOURCE.hd_base_t]
   }
   //#endregion
 

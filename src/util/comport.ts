@@ -18,7 +18,7 @@ const CAM_PORT_SETTINGS: ICommunicationsPort = {
 
 const PROJ_PORT: string = process.env.PROJ_SERIAL_PORT || 'COM6'
 const PROJ_PORT_SETTINGS: ICommunicationsPort = {
-  baudRate: 115200,
+  baudRate: 9600,
   dataBits: 8,
   parity: 'none',
   stopBits: 1,
