@@ -24,6 +24,9 @@ Get http://localhost:4000/proj/remote-key/menu
 ### projector remote-key exit
 Get http://localhost:4000/proj/remote-key/exit
 
+### projector remote-key top  
+Get http://localhost:4000/proj/remote-key/top
+
 ### projector remote-key bottom
 Get http://localhost:4000/proj/remote-key/bottom
 
