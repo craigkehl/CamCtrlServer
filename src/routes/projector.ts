@@ -16,4 +16,6 @@ projRouter.get('/remote-key/:reqCommand', projectorControls.setRemoteKey)
 
 projRouter.get('/source/:reqCommand', projectorControls.setSource)
 
+projRouter.get('/volume/:reqCommand/:value', projectorControls.setVolume)
+
 export default projRouter

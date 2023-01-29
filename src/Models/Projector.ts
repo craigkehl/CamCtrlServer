@@ -19,7 +19,8 @@ class Projector {
     },
     VOLUME: {
       increase: [0x14, 0x01, 0x00, 0x61],
-      decrease: [0x14, 0x02, 0x00, 0x62]
+      decrease: [0x14, 0x02, 0x00, 0x62],
+      write: [0x13, 0x2A]
     },
     REMOTE_KEY: {
       menu: [0x02, 0x04, 0x0F, 0x061],
@@ -45,7 +46,8 @@ class Projector {
   readonly STATUS = {
     BLANK: [0x12, 0x09, 0x68],
     POWER: [0x11, 0x00, 0x5E],
-    SOURCE: [0x13, 0x01, 0x61]
+    SOURCE: [0x13, 0x01, 0x61],
+    VOLUME: [0X14, 0X03, 0X64]
   }
 
   //#region commands
@@ -79,6 +81,15 @@ class Projector {
 
   volumeDecrease(): number[] {
     return [...this.CMD_TYPE_SEND, ...this.CMD_BASE, ...this.CMD.VOLUME.decrease]
+  }
+
+  volumeWriteValue(value: number): number[] {
+
+    const tempCmd = [...this.CMD_TYPE_SEND, ...this.CMD_BASE, ...this.CMD.VOLUME.write, value]
+    const checksumArr = tempCmd.slice(1)
+    let checksum = 0
+    checksumArr.forEach(value => checksum + value) 
+    return [...tempCmd, checksum]
   }
   //#endregion
   
@@ -155,6 +166,10 @@ class Projector {
 
   sourceStatus(): number[]{
     return [...this.STATUS_BASE, ...this.STATUS.SOURCE]
+  }
+
+  volumeStatus(): number[]{
+    return [...this.STATUS_BASE, ...this.STATUS.VOLUME]
   }
   //#endregion
 }

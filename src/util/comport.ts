@@ -35,3 +35,7 @@ export const projPort = new SerialPort(PROJ_PORT, PROJ_PORT_SETTINGS)
 projPort.on('error', function (err) {
   console.log('Error: ', err.message)
 })
+
+projPort.on('readable', function () {
+  console.log('Data: ', projPort.read())
+})

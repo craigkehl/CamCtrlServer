@@ -11,6 +11,8 @@
   "author": "Craig Kehl",
   "license": "ISC",
   "dependencies": {
+    "@serialport/parser-delimiter": "^10.5.0",
+    "@serialport/parser-readline": "^10.5.0",
     "@types/cors": "^2.8.12",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
