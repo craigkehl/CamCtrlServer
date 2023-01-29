@@ -88,7 +88,7 @@ class Projector {
     const tempCmd = [...this.CMD_TYPE_SEND, ...this.CMD_BASE, ...this.CMD.VOLUME.write, value]
     const checksumArr = tempCmd.slice(1)
     let checksum = 0
-    checksumArr.forEach(value => checksum + value) 
+    checksumArr.forEach(value => checksum += value) 
     return [...tempCmd, checksum]
   }
   //#endregion

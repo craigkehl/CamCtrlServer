@@ -66,4 +66,4 @@ Get http://localhost:4000/proj/source/sVideo
 Get http://localhost:4000/proj/source/hdBaseT
 
 ### projector volume by value
-Get http://localhost:4000/proj/volume/value/5
+Get http://localhost:4000/proj/volume/value/17
