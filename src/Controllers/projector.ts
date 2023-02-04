@@ -153,11 +153,11 @@ export const setSource = (req: Request, res: Response): void => {
       command = projector.sourceComp1()
       break;
   
-    case 'hdmi1':
+    case 'hdmi':
       command = projector.sourceHdmi1()
       break;
   
-    case 'hdmi2':
+    case 'roku':
       command = projector.sourceHdmi2()
       break;
   
