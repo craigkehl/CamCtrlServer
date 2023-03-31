@@ -4,7 +4,6 @@ import * as ptzControls from '../Controllers/ptzCamera';
 const ptzRouter = Router();
 
 ptzRouter.use((req, res, next) => {
-  console.log('In ptzRouter');
   next();
 });
 

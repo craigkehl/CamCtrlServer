@@ -18,7 +18,6 @@ app.use(express.json());
 app.use('/proj', projectorRouter)
 app.use(ptzCameraRouter)
 app.use(obsRouter)
-// app.use(userControlRoutes);
 
 app.listen(4000, () => {
   console.log('listening on port 4000');
