@@ -15,9 +15,9 @@ const app: Application = express();
 app.use(Cors());
 app.use(express.json());
 
+app.use('/proj', projectorRouter)
 app.use(ptzCameraRouter)
 app.use(obsRouter)
-app.use(projectorRouter)
 // app.use(userControlRoutes);
 
 app.listen(4000, () => {

@@ -16,9 +16,9 @@ const CAM_PORT_SETTINGS: ICommunicationsPort = {
   stopBits: 1,
 }
 
-const PROJ_PORT: string = process.env.PROJ_SERIAL_PORT || 'COM6'
+const PROJ_PORT: string = process.env.PROJ_SERIAL_PORT || 'COM3'
 const PROJ_PORT_SETTINGS: ICommunicationsPort = {
-  baudRate: 115200,
+  baudRate: 9600,
   dataBits: 8,
   parity: 'none',
   stopBits: 1,
@@ -34,4 +34,8 @@ camPort.on('error', function (err) {
 export const projPort = new SerialPort(PROJ_PORT, PROJ_PORT_SETTINGS)
 projPort.on('error', function (err) {
   console.log('Error: ', err.message)
+})
+
+projPort.on('readable', function () {
+  console.log('Data: ', projPort.read())
 })
