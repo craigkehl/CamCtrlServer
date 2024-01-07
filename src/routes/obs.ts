@@ -4,7 +4,6 @@ import * as obsControls from '../Controllers/obs';
 const obsRouter = Router();
 
 obsRouter.use((req, res, next) => {
-  console.log('in obsRouter');
   next();
 });
 

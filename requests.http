@@ -3,7 +3,7 @@ GET ws://localhost:4455
 
 // Power
 ### projector power on
-Get http://localhost:4000/proj/power/on
+Get http://localhost:4000/api/proj/power/on
  
 ### projector power off 
 Get http://localhost:4000/proj/power/off
