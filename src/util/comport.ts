@@ -1,4 +1,6 @@
 import SerialPort from 'serialport';
+import { Socket } from 'net';
+
 require('dotenv').config();
 
 interface ICommunicationsPort {
@@ -8,15 +10,16 @@ interface ICommunicationsPort {
   stopBits: 1 | 2 | undefined,
 }
 
-const CAM_PORT: string = process.env.CAM_SERIAL_PORT || 'COM8'
-const CAM_PORT_SETTINGS: ICommunicationsPort = {
-  baudRate: 9600,
-  dataBits: 8,
-  parity: 'none',
-  stopBits: 1,
-}
+// const CAM_PORT: string = process.env.CAM_SERIAL_PORT || '/dev/tty.usbserial-110'
+// const CAM_PORT_SETTINGS: ICommunicationsPort = {
+//   baudRate: 9600,
+//   dataBits: 8,
+//   parity: 'none',
+//   stopBits: 1,
+// }
 
-const PROJ_PORT: string = process.env.PROJ_SERIAL_PORT || 'COM3'
+
+const PROJ_PORT: string = process.env.PROJ_SERIAL_PORT || '/dev/tty.usbserial-120'
 const PROJ_PORT_SETTINGS: ICommunicationsPort = {
   baudRate: 9600,
   dataBits: 8,
@@ -24,12 +27,24 @@ const PROJ_PORT_SETTINGS: ICommunicationsPort = {
   stopBits: 1,
 }
 
+// MacOS command to list ports "ls /dev/tty.*"
 // const port = new SerialPort('/dev/tty.usb0', {
 
-export const camPort = new SerialPort(CAM_PORT, CAM_PORT_SETTINGS);
-camPort.on('error', function (err) {
-  console.log('Error: ', err.message);
-});
+
+// export const camPort = new Socket();
+// camPort.connect(80, '192.168.1.93', () => {
+//   console.log('Connected to server!')
+// })
+
+
+// camPort.on('close', () => {
+//   console.log('Connection closed');
+// });
+
+// // export const camPort = new SerialPort(CAM_PORT, CAM_PORT_SETTINGS);
+// camPort.on('error', function (err) {
+//   console.log('Error: ', err.message);
+// });
 
 export const projPort = new SerialPort(PROJ_PORT, PROJ_PORT_SETTINGS)
 projPort.on('error', function (err) {
@@ -39,3 +54,23 @@ projPort.on('error', function (err) {
 projPort.on('readable', function () {
   console.log('Data: ', projPort.read())
 })
+//
+// export let projPort: SerialPort | null = null;
+//
+// Object.defineProperty(exports, "projPort", {
+//   get: function() {
+//     if (!this._projPort) {
+//       this._projPort = new SerialPort(PROJ_PORT, PROJ_PORT_SETTINGS);
+//       this._projPort.on('error', (err: { message: string; }) => {
+//         console.log('Error: ', err.message);
+//         // reset port so it will be recreated on next usage
+//         this._projPort = null;
+//       });
+//       this._projPort.on('readable', () => {
+//         console.log('Data: ', this._projPort.read());
+//       });
+//     }
+//     return this._projPort;
+//   },
+//   enumerable: true
+// });
