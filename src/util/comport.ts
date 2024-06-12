@@ -28,12 +28,16 @@ const PROJ_PORT_SETTINGS: ICommunicationsPort = {
 
 export const camPort = new SerialPort(CAM_PORT, CAM_PORT_SETTINGS);
 camPort.on('error', function (err) {
-  console.log('Error: ', err.message);
+  console.log('Camera port connection error: ', err.message);
 });
+
+camPort.on('readable', function () {
+  console.log('Data: ', camPort.read())
+})
 
 export const projPort = new SerialPort(PROJ_PORT, PROJ_PORT_SETTINGS)
 projPort.on('error', function (err) {
-  console.log('Error: ', err.message)
+  console.log('Projector port connection error: ', err.message)
 })
 
 projPort.on('readable', function () {
