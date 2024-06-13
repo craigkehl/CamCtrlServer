@@ -107,53 +107,47 @@ class PTZCamera {
 
   //#region Focus
   focusStop(): number[] {
-    const command: number[] = [
+    return [
       ...this.cmdBase,
       ...this.cmd.focus.stop,
       this.cmdEnd,
     ];
-    return command;
   }
 
   focusFar(): number[] {
-    const command: number[] = [
+    return [
       ...this.cmdBase,
       ...this.cmd.focus.far,
       this.cmdEnd,
     ];
-    return command;
   }
   focusNear(): number[] {
-    const command: number[] = [
+    return [
       ...this.cmdBase,
       ...this.cmd.focus.near,
       this.cmdEnd,
     ];
-    return command;
   }
   focusAuto(): number[] {
-    const command: number[] = [
+    return [
       ...this.cmdBase,
       ...this.cmd.focus.auto,
       this.cmdEnd,
     ];
-    return command;
   }
   focusManual(): number[] {
-    const command: number[] = [
+    return [
       ...this.cmdBase,
       ...this.cmd.focus.manual,
       this.cmdEnd,
     ];
-    return command;
   }
   focusPush2Set(): number[] {
-    const command: number[] = [
+    return [
       ...this.cmdBase,
       ...this.cmd.focus.push2Set,
       this.cmdEnd,
     ];
-    return command;
   }
 
   //#endregion
@@ -182,20 +176,18 @@ class PTZCamera {
   }
 
   presetMotionLessOn(): number[] {
-    const command: number[] = [
+    return [
       ...this.cmdBase,
       ...this.cmd.presetMotionless.on,
       this.cmdEnd,
     ];
-    return command;
   }
   presetMotionLessOff(): number[] {
-    const command: number[] = [
+    return [
       ...this.cmdBase,
       ...this.cmd.presetMotionless.off,
       this.cmdEnd,
     ];
-    return command;
   }
 
   //#endregion
