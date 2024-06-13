@@ -12,6 +12,11 @@ export const recallPresetId = (req: Request, res: Response): void => {
     if (err) {
       return console.log('Error on write: ', err.message);
     }
+    // console.log(`command ${command} was written to camPort`);
+
+    // camPort.once('drain', function () {
+    //   console.log('Drain event fired, all commands have been written');
+    // });
     console.log(`Preset ${presetId} has been called and set`);
     res.status(200).json({
       Message: `Preset ${presetId} has been called and set`,
