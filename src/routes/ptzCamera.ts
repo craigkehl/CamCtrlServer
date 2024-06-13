@@ -1,18 +1,18 @@
 import { Router } from 'express';
 import * as ptzControls from '../Controllers/ptzCamera';
 
-const ptzRouter = Router();
+const ptzCameraRouter = Router();
 
-ptzRouter.use((req, res, next) => {
+ptzCameraRouter.use((req, res, next) => {
   next();
 });
 
-ptzRouter.get('/preset/:presetId', ptzControls.recallPresetId);
+ptzCameraRouter.get('/preset/:presetId', ptzControls.recallPresetId);
 
-ptzRouter.post('/preset', ptzControls.setPresetId);
+ptzCameraRouter.post('/preset', ptzControls.setPresetId);
 
-ptzRouter.get('/zoom/:speed', ptzControls.zoom);
+ptzCameraRouter.get('/zoom/:speed', ptzControls.zoom);
 
-ptzRouter.get('/move', ptzControls.moveVarSpeed);
+ptzCameraRouter.get('/move', ptzControls.moveVarSpeed);
 
-export default ptzRouter;
+export default ptzCameraRouter;

@@ -15,8 +15,8 @@ app.use(Cors());
 app.use(express.json());
 
 app.use('/api/proj', projectorRouter)
-app.use('/api', ptzCameraRouter)
-app.use('/api', obsRouter)
+app.use('/api/ptz', ptzCameraRouter)
+app.use('/api/media', obsRouter)
 
 app.listen(4000, () => {
   console.log('listening on port 4000');
