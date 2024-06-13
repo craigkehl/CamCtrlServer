@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
 import PTZCamera from '../Models/PTZCamera';
 import { camPort  }from '../util/comport';
 
