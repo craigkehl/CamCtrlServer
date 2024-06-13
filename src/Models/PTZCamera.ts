@@ -204,8 +204,8 @@ class PTZCamera {
   // Normal xRate-0x00~0x18 yRate-0x00~0x18
   moveVarSpeed(xRate: number, yRate: number): number[] {
     const command: number[] = [...this.cmdBase, 0x06, 0x01];
-    command.push(xRate);
-    command.push(yRate);
+    command.push(Math.abs(xRate));
+    command.push(Math.abs(yRate));
 
     const pan = xRate === 0 ? 0x03 : xRate > 0 ? 0x02 : 0x01;
     command.push(pan);
