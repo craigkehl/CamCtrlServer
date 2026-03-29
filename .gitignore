@@ -5,5 +5,5 @@ dist
 server.cert
 server.key
 .code-workspace
-.idea*
 
+.idea*
