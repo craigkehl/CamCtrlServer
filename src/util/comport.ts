@@ -8,7 +8,7 @@ interface ICommunicationsPort {
   stopBits: 1 | 2 | undefined,
 }
 
-const CAM_PORT: string = process.env.CAM_SERIAL_PORT || 'COM8'
+const CAM_PORT: string = process.env.CAM_SERIAL_PORT || 'COM6'
 const CAM_PORT_SETTINGS: ICommunicationsPort = {
   baudRate: 9600,
   dataBits: 8,
