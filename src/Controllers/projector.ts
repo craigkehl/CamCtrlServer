@@ -29,7 +29,7 @@ export const setPower = (req: Request, res: Response): void => {
   }
 
   if (command) {
-    projPort.write(command, function (err) {
+    projPort.write(command, function (err: Error | null) {
       if (err) {
         console.log('Error on write: ', err.message);
         res.status(500)
@@ -65,7 +65,7 @@ export const setBlank = (req: Request, res: Response): void => {
   }
 
   if (command) {
-    projPort.write(command, function (err) {
+    projPort.write(command, function (err: Error | null) {
       if (err) {
         console.log('Error on write: ', err.message);
         res.status(500)
@@ -129,7 +129,7 @@ export const setRemoteKey = (req: Request, res: Response): void => {
   }
 
   if (command) {
-    projPort.write(command, function (err) {
+    projPort.write(command, function (err: Error | null) {
       if (err) {
         console.log('Error on write: ', err.message);
         res.status(500)
@@ -181,7 +181,7 @@ export const setSource = (req: Request, res: Response): void => {
   }
 
   if (command) {
-    projPort.write(command, function (err) {
+    projPort.write(command, function (err: Error | null) {
       if (err) {
         console.log('Error on write: ', err.message);
         res.status(500)
@@ -225,7 +225,7 @@ export const setVolume = (req: Request, res: Response): void => {
 
   if (command) {
     console.log(command)
-    projPort.write(command, function (err) {
+    projPort.write(command, function (err: Error | null) {
       if (err) {
         console.log('Error on write: ', err.message);
         res.status(500)
@@ -241,7 +241,7 @@ export const setVolume = (req: Request, res: Response): void => {
   }
 
   const status = projector.volumeStatus()
-  projPort.write(status, function (err) {
+  projPort.write(status, function (err: Error | null) {
     if (err) {
       console.log('Error on write: ', err.message);
       }

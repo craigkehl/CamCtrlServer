@@ -1,4 +1,4 @@
-import SerialPort from 'serialport';
+// import SerialPort from 'serialport';  // Disabled - no serial hardware connected
 import { Socket } from 'net';
 
 require('dotenv').config();
@@ -46,14 +46,19 @@ const PROJ_PORT_SETTINGS: ICommunicationsPort = {
 //   console.log('Error: ', err.message);
 // });
 
-export const projPort = new SerialPort(PROJ_PORT, PROJ_PORT_SETTINGS)
-projPort.on('error', function (err) {
-  console.log('Error: ', err.message)
-})
+// Projector serial port disabled - no RS-232/422 connection at this location.
+// Re-enable when projector is reconnected.
+// export const projPort = new SerialPort(PROJ_PORT, PROJ_PORT_SETTINGS)
+// projPort.on('error', function (err) {
+//   console.log('Error: ', err.message)
+// })
+//
+// projPort.on('readable', function () {
+//   console.log('Data: ', projPort.read())
+// })
 
-projPort.on('readable', function () {
-  console.log('Data: ', projPort.read())
-})
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const projPort: any = null
 //
 // export let projPort: SerialPort | null = null;
 //

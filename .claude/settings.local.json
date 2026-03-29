@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C /Users/craigkehl/dev/projects/church/CamCtrlServer log --oneline)",
+      "Bash(npx tsc --noEmit)",
+      "Bash(npx tsc)"
+    ]
+  }
+}
