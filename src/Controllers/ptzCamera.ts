@@ -1,69 +1,59 @@
-import { Request, Response, NextFunction } from 'express';
+import dgram from 'dgram';
+import { Request, Response } from 'express';
 import PTZCamera from '../Models/PTZCamera';
-import { camPort  }from '../util/comport';
+require('dotenv').config();
+
+const CAM_IP_ADDRESS: string = process.env.CAM_IP_ADDRESS || '192.168.108.200';
+const CAM_PORT: number = parseInt(process.env.CAM_PORT || '52381');
+let sequenceNumber = 0;
 
 const ptzCamera = new PTZCamera();
 
-export const recallPresetId = (req: Request, res: Response): void => {
-  const params = req.params;
-  const presetId = params.presetId;
-  const command = ptzCamera.presetGet(parseInt(presetId));
-  camPort.write(command, function (err) {
-    if (err) {
-      return console.log('Error on write: ', err.message);
+function sendUdpCommand(data: number[], res: Response, successStatus: number, successMessage: string): void {
+  const udpClient = dgram.createSocket('udp4');
+  sequenceNumber++;
+  const payload = Buffer.from(data);
+  const header = Buffer.alloc(8);
+  header.writeUInt8(0x01, 0);
+  header.writeUInt8(0x01, 1);
+  header.writeUInt16BE(payload.length, 2);
+  header.writeUInt32BE(sequenceNumber, 4);
+  const message = Buffer.concat([header, payload]);
+  udpClient.send(message, CAM_PORT, CAM_IP_ADDRESS, (error) => {
+    if (error) {
+      console.error('Error sending command:', error);
+      res.status(500).send('Error sending command');
+    } else {
+      console.log(successMessage);
+      res.status(successStatus).json({ Message: successMessage });
     }
-    console.log(`Preset ${presetId} has been called and set`);
-    res.status(200).json({
-      Message: `Preset ${presetId} has been called and set`,
-    });
+    udpClient.close();
   });
+}
+
+export const recallPresetId = (req: Request, res: Response): void => {
+  const { presetId } = req.params;
+  const command = ptzCamera.presetGet(parseInt(presetId));
+  sendUdpCommand(command, res, 200, `Preset ${presetId} has been called and set`);
 };
 
 export const setPresetId = (req: Request, res: Response): void => {
   const presetId = req.body.presetId;
   const command = ptzCamera.presetSet(parseInt(presetId));
-  camPort.write(command, function (err) {
-    if (err) {
-      return console.log('Error on write: ', err.message);
-    }
-    console.log(`Preset ${presetId} has been stored`);
-    res.status(201).json({
-      Message: `Preset ${presetId} has been stored`,
-    });
-  });
+  sendUdpCommand(command, res, 201, `Preset ${presetId} has been stored`);
 };
 
 export const zoom = (req: Request, res: Response): void => {
-  const params = req.params;
-  const speed = params.speed;
+  const { speed } = req.params;
   const command = ptzCamera.zoom(parseInt(speed));
-  camPort.write(command, function (err) {
-    if (err) {
-      return console.log('Error on write: ', err.message);
-    }
-    console.log(`Zoom ${speed} has been called and set`);
-    res.status(200).json({
-      Message: `Zoom ${speed} has been called and set`,
-    });
-  });
+  sendUdpCommand(command, res, 200, `Zoom ${speed} has been called and set`);
 };
 
 export const moveVarSpeed = (req: Request, res: Response): void => {
-  const pan = req.query.pan;
-  const tilt = req.query.tilt;
+  const { pan, tilt } = req.query;
   const command = ptzCamera.moveVarSpeed(
     parseInt(pan as string),
     parseInt(tilt as string)
   );
-  camPort.write(command, function (err) {
-    if (err) {
-      return console.log('Error on write: ', err.message);
-    }
-    console.log(
-      `The pan and tilt speeds of: ${pan} and ${tilt} have been called and set`
-    );
-    res.status(200).json({
-      Message: `The pan and tilt speeds of: ${pan} and ${tilt} have been called and set`,
-    });
-  });
+  sendUdpCommand(command, res, 200, `The pan and tilt speeds of: ${pan} and ${tilt} have been called and set`);
 };
