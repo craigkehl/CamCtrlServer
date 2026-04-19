@@ -8,7 +8,7 @@ interface ICommunicationsPort {
   stopBits: 1 | 2 | undefined,
 }
 
-const PROJ_PORT: string = process.env.PROJ_SERIAL_PORT || 'COM3'
+const PROJ_PORT: string = process.env.PROJ_SERIAL_PORT || 'COM4'
 const PROJ_PORT_SETTINGS: ICommunicationsPort = {
   baudRate: 9600,
   dataBits: 8,
