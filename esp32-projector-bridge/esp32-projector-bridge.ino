@@ -49,9 +49,11 @@ void setup() {
 
   if (WiFi.status() == WL_CONNECTED) {
     Serial.println("\nWiFi connected!");
-    Serial.print("IP address: ");
+    Serial.print("MAC address: ");
+    Serial.println(WiFi.macAddress());
+    Serial.print("IP address:  ");
     Serial.println(WiFi.localIP());
-    Serial.print("Listening on TCP port: ");
+    Serial.print("TCP port:    ");
     Serial.println(tcpPort);
   } else {
     Serial.println("\nWiFi connection failed!");

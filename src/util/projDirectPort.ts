@@ -61,6 +61,7 @@ class ProjDirectPort extends EventEmitter {
     this.reconnectTimer = setTimeout(() => {
       this.reconnectTimer = null;
       console.log(`Projector direct IP: reconnecting to ${this.host}:${this.port}`);
+      this.socket.removeAllListeners();
       this.socket.destroy();
       this.socket = new net.Socket();
       this.attachHandlers();
