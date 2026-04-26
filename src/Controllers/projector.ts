@@ -1,250 +1,111 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
 
-import Projector from '../Models/Projector';
+import ProjectorPJLink from '../Models/ProjectorPJLink';
 import { projPort } from '../util/comport';
 
-const projector = new Projector();
+const projector = new ProjectorPJLink();
 
 export const setPower = (req: Request, res: Response): void => {
   const { reqCommand } = req.params
-  let command: number[] | undefined
+  let command: string | undefined
   switch (reqCommand) {
-    case 'on':
-      command = projector.powerOn()
-      break;
-  
-    case 'off':
-      command = projector.powerOff()
-      break;
-  
-    case 'status':
-      command = projector.powerStatus()
-      break;
-  
+    case 'on':     command = projector.powerOn();     break;
+    case 'off':    command = projector.powerOff();    break;
+    case 'status': command = projector.powerStatus(); break;
     default:
-      command = undefined
-      console.log('Command not received in ProjController')
-      //#Todo throw error
-      break;
+      res.status(400).json({ error: `Unknown power command: ${reqCommand}` })
+      return
   }
 
-  if (command) {
-    projPort.write(command, function (err: Error | null | undefined) {
-      if (err) {
-        console.log('Error on write: ', err.message);
-        res.status(500)
-          .json(err?.message || 'Error in ProjController')
-        return
-      } else {
-        console.log(`"Power ${reqCommand}" sent to the projector`);
-        res.status(200).json({
-          Message: `"Power  ${reqCommand}" sent to the projector`,
-        });
-      }
-    })
-  }
+  projPort.write(command, (err: Error | null | undefined) => {
+    if (err) {
+      console.log('Error on write: ', err.message)
+      res.status(500).json({ error: err.message })
+    } else {
+      console.log(`"Power ${reqCommand}" sent to projector`)
+      res.status(200).json({ message: `Power ${reqCommand} sent` })
+    }
+  })
 }
 
 export const setBlank = (req: Request, res: Response): void => {
   const { reqCommand } = req.params
-  let command: number[] | undefined
+  let command: string | undefined
   switch (reqCommand) {
-    case 'on':
-      command = projector.blankOn()
-      break;
-  
-    case 'off':
-      command = projector.blankOff()
-      break;
-  
+    case 'on':  command = projector.blankOn();  break;
+    case 'off': command = projector.blankOff(); break;
     default:
-      command = undefined
-      console.log('Command not received in ProjController')
-      //#Todo throw error
-      break;
+      res.status(400).json({ error: `Unknown blank command: ${reqCommand}` })
+      return
   }
 
-  if (command) {
-    projPort.write(command, function (err: Error | null | undefined) {
-      if (err) {
-        console.log('Error on write: ', err.message);
-        res.status(500)
-          .json(err?.message || 'Error in ProjController')
-        return
-      } else {
-        console.log(`"Blank ${reqCommand}" sent to the projector`);
-        res.status(200).json({
-          Message: `"Blank  ${reqCommand}" sent to the projector`,
-        });
-      }
-    })
-  }
-}
-
-export const setRemoteKey = (req: Request, res: Response): void => {
-  const { reqCommand } = req.params
-  let command: number[] | undefined
-  switch (reqCommand) {
-    case 'menu':
-      command = projector.remoteKeyMenu()
-      break;
-  
-    case 'exit':
-      command = projector.remoteKeyExit()
-      break;
-  
-    case 'top':
-      command = projector.remoteKeyTop()
-      break;
-  
-    case 'bottom':
-      command = projector.remoteKeyBottom()
-      break;
-  
-    case 'left':
-      command = projector.remoteKeyLeft()
-      break;
-  
-    case 'right':
-      command = projector.remoteKeyRight()
-      break;
-  
-    case 'source':
-      command = projector.remoteKeySource()
-      break;
-  
-    case 'enter':
-      command = projector.remoteKeyEnter()
-      break;
-  
-    case 'auto':
-      command = projector.remoteKeyAuto()
-      break;
-  
-    default:
-      command = undefined
-      console.log('Command not received in ProjController')
-      //#Todo throw error
-      break;
-  }
-
-  if (command) {
-    projPort.write(command, function (err: Error | null | undefined) {
-      if (err) {
-        console.log('Error on write: ', err.message);
-        res.status(500)
-          .json(err?.message || 'Error in ProjController')
-        return
-      } else {
-        console.log(`"Remote key ${reqCommand}" sent to the projector`);
-        res.status(200).json({
-          Message: `"Remote key  ${reqCommand}" sent to the projector`,
-        });
-      }
-    })
-  }
+  projPort.write(command, (err: Error | null | undefined) => {
+    if (err) {
+      console.log('Error on write: ', err.message)
+      res.status(500).json({ error: err.message })
+    } else {
+      console.log(`"Blank ${reqCommand}" sent to projector`)
+      res.status(200).json({ message: `Blank ${reqCommand} sent` })
+    }
+  })
 }
 
 export const setSource = (req: Request, res: Response): void => {
   const { reqCommand } = req.params
-  let command: number[] | undefined
+  let command: string | undefined
   switch (reqCommand) {
-    case 'comp1':
-      command = projector.sourceComp1()
-      break;
-  
-    case 'hdmi':
-      command = projector.sourceHdmi1()
-      break;
-  
-    case 'roku':
-      command = projector.sourceHdmi2()
-      break;
-  
-    case 'compositeVideo':
-      command = projector.sourceCompositeVideo()
-      break;
-  
-    case 'sVideo':
-      command = projector.sourceSVideo()
-      break;
-  
-    case 'hdBaseT':
-      command = projector.sourceHdBaseT()
-      break;
-    
+    case 'hdmi': command = projector.sourceHdmi1(); break;
+    case 'roku': command = projector.sourceHdmi2(); break;
     default:
-      command = undefined
-      console.log('Command not received in ProjController')
-      //#Todo throw error
-      break;
+      res.status(501).json({ error: `Source "${reqCommand}" not supported via PJLink` })
+      return
   }
 
-  if (command) {
-    projPort.write(command, function (err: Error | null | undefined) {
-      if (err) {
-        console.log('Error on write: ', err.message);
-        res.status(500)
-          .json(err?.message || 'Error in ProjController')
-        return
-      } else {
-        console.log(`"Source ${reqCommand}" sent to the projector`);
-        res.status(200).json({
-          Message: `"Source  ${reqCommand}" sent to the projector`,
-        });
-      }
-    })
+  projPort.write(command, (err: Error | null | undefined) => {
+    if (err) {
+      console.log('Error on write: ', err.message)
+      res.status(500).json({ error: err.message })
+    } else {
+      console.log(`"Source ${reqCommand}" sent to projector`)
+      res.status(200).json({ message: `Source ${reqCommand} sent` })
+    }
+  })
+}
+
+export const getStatus = async (_req: Request, res: Response): Promise<void> => {
+  try {
+    const powerResp = await projPort.writeAndRead('%1POWR ?\r')
+    const powerCode = powerResp.match(/%1POWR=(\d)/)?.[1]
+    const power = powerCode === '1' ? 'on'
+                : powerCode === '2' ? 'cooling'
+                : powerCode === '3' ? 'warming'
+                : 'off'
+
+    let source: string | null = null
+    let blank: boolean | null = null
+
+    if (power === 'on') {
+      const inputResp = await projPort.writeAndRead('%1INPT ?\r')
+      const inputCode = inputResp.match(/%1INPT=(\d+)/)?.[1]
+      source = inputCode === '31' ? 'hdmi'
+             : inputCode === '32' ? 'roku'
+             : 'unknown'
+
+      const blankResp = await projPort.writeAndRead('%1AVMT ?\r')
+      const blankCode = blankResp.match(/%1AVMT=(\d+)/)?.[1]
+      blank = blankCode ? blankCode.endsWith('1') : false
+    }
+
+    res.status(200).json({ power, source, blank })
+  } catch (err: any) {
+    res.status(500).json({ error: err.message })
   }
 }
 
-export const setVolume = (req: Request, res: Response): void => {
-  console.log('In setVolume')
-  const { reqCommand, value } = req.params
-  console.log(reqCommand, " ", value)
-  // let command = [0x06, 0x14, 0x00, 0x04, 0x00, 0x34, 0x13, 0x2A, 0x11, 0x9A]
-  let command;
-  switch (reqCommand) {
-    case 'value':
-      command = projector.volumeWriteValue(parseInt(value, 10))
-      break;
-  
-    case 'increase':
-      command = projector.volumeIncrease()
-      break;
-  
-    case 'decrease':
-      command = projector.volumeDecrease()
-      break;
-  
-    default:
-      command = undefined
-      console.log('Command not received in ProjController')
-      //#Todo throw error
-      break;
-  }
+export const setRemoteKey = (_req: Request, res: Response): void => {
+  res.status(501).json({ error: 'Remote keys not available via PJLink Class 1' })
+}
 
-  if (command) {
-    console.log(command)
-    projPort.write(command, function (err: Error | null | undefined) {
-      if (err) {
-        console.log('Error on write: ', err.message);
-        res.status(500)
-          .json(err?.message || 'Error in ProjController')
-        return
-      } else {
-        console.log(`volume" sent to the projector`);
-        res.status(200).json({
-          Message: `"Source volume" sent to the projector`,
-        });
-      }
-    })
-  }
-
-  const status = projector.volumeStatus()
-  projPort.write(status, function (err: Error | null | undefined) {
-    if (err) {
-      console.log('Error on write: ', err.message);
-      }
-  })
-  console.log('command end')
+export const setVolume = (_req: Request, res: Response): void => {
+  res.status(501).json({ error: 'Volume not available via PJLink Class 1' })
 }

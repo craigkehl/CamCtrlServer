@@ -3,9 +3,8 @@ import * as projectorControls from '../Controllers/projector'
 
 const projRouter = Router()
 
-projRouter.use((req, res, next) => {
-  next()
-})
+
+projRouter.get('/status', projectorControls.getStatus)
 
 projRouter.get('/power/:reqCommand', projectorControls.setPower)
 
