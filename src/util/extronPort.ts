@@ -13,6 +13,8 @@ class ExtronPort extends EventEmitter {
   private readonly password: string;
   private _buffer: string = '';
   private reconnectTimer: NodeJS.Timeout | null = null;
+  private _busy = false;
+  private _queue: Array<() => void> = [];
 
   constructor(host: string, port: number, password: string) {
     super();
@@ -107,34 +109,59 @@ class ExtronPort extends EventEmitter {
 
   writeAndRead(command: string, timeoutMs = 2000): Promise<string> {
     return new Promise((resolve, reject) => {
-      if (!this._connected) {
-        reject(new Error('Extron IN1808 not connected'));
-        return;
-      }
-      this._buffer = '';
-
-      const timer = setTimeout(() => {
-        this.removeListener('readable', onReadable);
-        reject(new Error('Extron IN1808 response timeout'));
-      }, timeoutMs);
-
-      const onReadable = () => {
-        clearTimeout(timer);
-        const response = this._buffer.trim();
+      const execute = () => {
+        if (!this._connected) {
+          this._busy = false;
+          this._dequeue();
+          reject(new Error('Extron IN1808 not connected'));
+          return;
+        }
         this._buffer = '';
-        resolve(response);
+
+        const done = (fn: () => void) => {
+          this._busy = false;
+          this._dequeue();
+          fn();
+        };
+
+        const timer = setTimeout(() => {
+          this.removeListener('readable', onReadable);
+          done(() => reject(new Error('Extron IN1808 response timeout')));
+        }, timeoutMs);
+
+        const onReadable = () => {
+          clearTimeout(timer);
+          const response = this._buffer.trim();
+          this._buffer = '';
+          done(() => resolve(response));
+        };
+
+        this.once('readable', onReadable);
+
+        this.socket.write(command + '\r', (err) => {
+          if (err) {
+            clearTimeout(timer);
+            this.removeListener('readable', onReadable);
+            done(() => reject(err));
+          }
+        });
       };
 
-      this.once('readable', onReadable);
-
-      this.socket.write(command + '\r', (err) => {
-        if (err) {
-          clearTimeout(timer);
-          this.removeListener('readable', onReadable);
-          reject(err);
-        }
-      });
+      if (this._busy) {
+        this._queue.push(execute);
+      } else {
+        this._busy = true;
+        execute();
+      }
     });
+  }
+
+  private _dequeue(): void {
+    const next = this._queue.shift();
+    if (next) {
+      this._busy = true;
+      next();
+    }
   }
 
   write(command: string, callback?: (err?: Error | null) => void): void {
