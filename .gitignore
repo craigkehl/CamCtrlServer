@@ -7,3 +7,6 @@ server.key
 .code-workspace
 
 .idea*
+.DS_Store
+.claude*
+winsw/
