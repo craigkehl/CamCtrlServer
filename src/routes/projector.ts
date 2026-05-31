@@ -4,6 +4,7 @@ import * as projectorControls from '../Controllers/projector'
 const projRouter = Router()
 
 
+projRouter.get('/config', projectorControls.getConfig)
 projRouter.get('/status', projectorControls.getStatus)
 
 projRouter.get('/power/:reqCommand', projectorControls.setPower)

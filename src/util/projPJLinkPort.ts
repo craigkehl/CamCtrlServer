@@ -1,123 +1,105 @@
 import * as net from 'net';
-import { EventEmitter } from 'events';
+import * as crypto from 'crypto';
 require('dotenv').config();
 
-class ProjPJLinkPort extends EventEmitter {
-  private socket: net.Socket;
-  private connected = false;
+// PJLink is a connect-per-command protocol: connect → receive banner → send command → receive response → close.
+// Keeping a persistent connection breaks because the projector closes it after each response.
+
+class ProjPJLinkPort {
   private readonly host: string;
   private readonly port: number;
-  private _buffer: string | null = null;
-  private reconnectTimer: NodeJS.Timeout | null = null;
+  private readonly password: string;
 
-  constructor(host: string, port: number) {
-    super();
+  constructor(host: string, port: number, password = '') {
     this.host = host;
     this.port = port;
-    this.socket = new net.Socket();
-    this.attachHandlers();
-    this.socket.connect(this.port, this.host);
-    console.log(`Projector PJLink: connecting to ${this.host}:${this.port}`);
+    this.password = password;
+    console.log(`Projector PJLink: ${this.host}:${this.port} (connect-per-command)`);
   }
 
-  private attachHandlers(): void {
-    this.socket.on('connect', () => {
-      console.log(`Projector PJLink: TCP connected, waiting for banner...`);
-    });
-
-    this.socket.on('data', (data: Buffer) => {
-      const msg = data.toString();
-      if (!this.connected && msg.startsWith('PJLINK')) {
-        this.connected = true;
-        if (this.reconnectTimer) {
-          clearTimeout(this.reconnectTimer);
-          this.reconnectTimer = null;
-        }
-        console.log(`Projector PJLink: ready (${msg.trim()})`);
-        return;
-      }
-      this._buffer = msg;
-      console.log('Projector PJLink response:', msg.trim());
-      this.emit('readable');
-    });
-
-    this.socket.on('error', (err: Error) => {
-      this.connected = false;
-      console.log('Projector PJLink error:', err.message);
-      this.emit('error', err);
-      this.scheduleReconnect();
-    });
-
-    this.socket.on('close', () => {
-      this.connected = false;
-      console.log('Projector PJLink: disconnected');
-      this.scheduleReconnect();
-    });
-  }
-
-  private scheduleReconnect(): void {
-    if (this.reconnectTimer) return;
-    this.reconnectTimer = setTimeout(() => {
-      this.reconnectTimer = null;
-      console.log(`Projector PJLink: reconnecting to ${this.host}:${this.port}`);
-      this.socket.removeAllListeners();
-      this.socket.destroy();
-      this.socket = new net.Socket();
-      this.attachHandlers();
-      this.socket.connect(this.port, this.host);
-    }, 5000);
-  }
-
-  read(): string | null {
-    const buf = this._buffer;
-    this._buffer = null;
-    return buf;
-  }
-
-  writeAndRead(command: string, timeoutMs = 2000): Promise<string> {
+  private runCommand(command: string, timeoutMs: number): Promise<string> {
     return new Promise((resolve, reject) => {
-      if (!this.connected) {
-        reject(new Error('Projector PJLink not connected'));
-        return;
-      }
-      const timer = setTimeout(() => {
-        this.removeListener('readable', onReadable);
-        reject(new Error('Projector response timeout'));
-      }, timeoutMs);
+      const socket = new net.Socket();
+      let settled = false;
+      let bannerReceived = false;
+      let buffer = '';
 
-      const onReadable = () => {
+      const done = (err: Error | null, result = '') => {
+        if (settled) return;
+        settled = true;
         clearTimeout(timer);
-        resolve(this._buffer || '');
-        this._buffer = null;
+        socket.destroy();
+        if (err) reject(err);
+        else resolve(result);
       };
 
-      this.once('readable', onReadable);
+      const timer = setTimeout(
+        () => done(new Error('Projector response timeout')),
+        timeoutMs
+      );
 
-      this.socket.write(command, (err) => {
-        if (err) {
-          clearTimeout(timer);
-          this.removeListener('readable', onReadable);
-          reject(err);
+      socket.on('data', (data: Buffer) => {
+        buffer += data.toString();
+
+        if (!bannerReceived) {
+          if (!buffer.includes('\n') && !buffer.includes('\r')) return;
+          if (buffer.startsWith('PJLINK 0')) {
+            bannerReceived = true;
+            buffer = '';
+            socket.write(command);
+          } else if (buffer.startsWith('PJLINK 1 ')) {
+            const randomNum = buffer.trim().split(' ')[2] ?? '';
+            bannerReceived = true;
+            buffer = '';
+            const hash = crypto.createHash('md5')
+              .update(randomNum + this.password)
+              .digest('hex');
+            socket.write(hash + command);
+          } else {
+            done(new Error(`Unexpected PJLink banner: ${buffer.trim()}`));
+          }
+          return;
+        }
+
+        if (buffer.includes('\r') || buffer.includes('\n')) {
+          done(null, buffer);
         }
       });
+
+      socket.on('error', (err) => done(err));
+
+      socket.on('close', () => {
+        if (!settled) {
+          if (buffer.length > 0) {
+            done(null, buffer);
+          } else {
+            done(new Error('Projector closed connection without response'));
+          }
+        }
+      });
+
+      socket.connect(this.port, this.host);
     });
+  }
+
+  writeAndRead(command: string, timeoutMs = 3000): Promise<string> {
+    console.log('Projector PJLink query:', command.trim());
+    return this.runCommand(command, timeoutMs);
   }
 
   write(command: string, callback?: (err?: Error | null) => void): void {
-    if (!this.connected) {
-      const err = new Error('Projector PJLink not connected');
-      console.log(err.message);
-      if (callback) callback(err);
-      return;
-    }
-    console.log('Sending to projector:', command.trim());
-    this.socket.write(command, (err) => {
-      if (callback) callback(err ?? null);
-    });
+    console.log('Projector PJLink send:', command.trim());
+    this.runCommand(command, 3000)
+      .then(() => callback?.(null))
+      .catch((err: Error) => {
+        console.log('Projector PJLink error:', err.message);
+        callback?.(err);
+      });
   }
 }
 
-const PROJ_PJLINK_HOST = process.env.PROJ_PJLINK_HOST || '192.168.108.11';
+const PROJ_PJLINK_HOST = process.env.PROJ_PJLINK_HOST || '192.168.108.3';
 const PROJ_PJLINK_PORT = parseInt(process.env.PROJ_PJLINK_PORT || '4352', 10);
+const PROJ_PJLINK_PASSWORD = process.env.PROJ_PJLINK_PASSWORD || '';
 
-export const projPJLinkPort = new ProjPJLinkPort(PROJ_PJLINK_HOST, PROJ_PJLINK_PORT);
+export const projPJLinkPort = new ProjPJLinkPort(PROJ_PJLINK_HOST, PROJ_PJLINK_PORT, PROJ_PJLINK_PASSWORD);

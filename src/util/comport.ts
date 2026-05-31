@@ -4,10 +4,6 @@ require('dotenv').config();
 const { projPJLinkPort } = require('./projPJLinkPort')
 const projPort = projPJLinkPort
 
-projPort.on('error', (err: Error) => {
-  console.log('Projector PJLink error (non-fatal):', err.message)
-})
-
 console.log('Projector control: PJLink (direct IP)')
 
 // --- RS-232 options preserved for future use ---

@@ -5,6 +5,13 @@ import { projPort } from '../util/comport';
 
 const projector = new ProjectorPJLink();
 
+export const getConfig = (_req: Request, res: Response): void => {
+  res.status(200).json({
+    host: process.env.PROJ_PJLINK_HOST || '192.168.108.3',
+    port: parseInt(process.env.PROJ_PJLINK_PORT || '4352', 10),
+  })
+}
+
 export const setPower = (req: Request, res: Response): void => {
   const { reqCommand } = req.params
   let command: string | undefined

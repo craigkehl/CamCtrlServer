@@ -81,6 +81,11 @@ export async function getFullState(): Promise<ObsFullState> {
   }
   lastPollTime = now;
 
+  // If OBS gave up, retry when a client polls (OBS may not have been running at startup)
+  if (obsStatus === 'unavailable') {
+    connectWithBackoff();
+  }
+
   if (obsStatus !== 'connected') {
     return { connection: obsStatus, currentScene: null, scenes: [] };
   }
