@@ -19,7 +19,7 @@
  *      https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
  *      Then: Tools > Board > Boards Manager > search "esp32" > install
  *   2. Select board: Tools > Board > ESP32 Arduino > "ESP32 Dev Module"
- *   3. Fill in WIFI_SSID and WIFI_PASSWORD below
+ *   3. Copy secrets.example.h to secrets.h and fill in WIFI_SSID / WIFI_PASSWORD
  *   4. Upload, then open Serial Monitor at 115200 baud to find the assigned IP
  *   5. Set PROJ_TCP_HOST to that IP in the server's .env file
  */
@@ -29,8 +29,7 @@
 #include <stdint.h>
 
 // --- Configuration (edit these) ---
-const char*    WIFI_SSID     = "Liahona";
-const char*    WIFI_PASSWORD = "alma3738";
+#include "secrets.h"   // WIFI_SSID, WIFI_PASSWORD (gitignored; see secrets.example.h)
 const uint16_t TCP_PORT      = 8888;
 
 // UART2 pins

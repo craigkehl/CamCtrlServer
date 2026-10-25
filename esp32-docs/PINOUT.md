@@ -4,17 +4,20 @@
 
 | XIAO Label | GPIO | Function | Used For |
 |------------|------|----------|----------|
-| D0 | GPIO2 | Digital I/O | - |
-| D1 | GPIO3 | Digital I/O | - |
-| D2 | GPIO4 | Digital I/O | - |
-| D3 | GPIO5 | Digital I/O | - |
-| D4 | GPIO6 | Digital I/O / I2C SDA | - |
-| D5 | GPIO7 | Digital I/O / I2C SCL | - |
-| **D6** | **GPIO21** | **Digital I/O / UART TX** | **Serial TX → RS232 RX** |
-| **D7** | **GPIO20** | **Digital I/O / UART RX** | **Serial RX ← RS232 TX** |
-| D8 | GPIO8 | Digital I/O | - |
-| D9 | GPIO9 | Digital I/O | - |
-| D10 | GPIO10 | Digital I/O | - |
+| D0 | GPIO0 | Digital I/O / A0 | - |
+| D1 | GPIO1 | Digital I/O / A1 | - |
+| D2 | GPIO2 | Digital I/O / A2 | - |
+| D3 | GPIO21 | Digital I/O / SPI SS | - |
+| D4 | GPIO22 | Digital I/O / I2C SDA | - |
+| D5 | GPIO23 | Digital I/O / I2C SCL | - |
+| **D6** | **GPIO16** | **Digital I/O / UART TX** | **Serial TX → RS232 module RXD** |
+| **D7** | **GPIO17** | **Digital I/O / UART RX** | **Serial RX ← RS232 module TXD** |
+| D8 | GPIO19 | Digital I/O / SPI SCK | - |
+| D9 | GPIO20 | Digital I/O / SPI MISO | - |
+| D10 | GPIO18 | Digital I/O / SPI MOSI | - |
+
+Source: esp32 core 3.3.8 `variants/XIAO_ESP32C6/pins_arduino.h`. An earlier version of this table
+listed the **XIAO ESP32-C3** mapping (D6 = GPIO21, D7 = GPIO20), which is wrong for the C6.
 
 ## Power Pins
 
@@ -44,22 +47,21 @@ XIAO Pin → RS232-TTL Module
 ──────────────────────────────
 3V3      → VCC (powers module)
 GND      → GND (common ground)
-D6       → RX  (ESP32 TX → Module RX)
-D7       → TX  (ESP32 RX ← Module TX)
+D6       → RXD (ESP32 TX → Module RX)
+D7       ← TXD (ESP32 RX ← Module TX)
 ```
 
 ## Serial Configuration
 
 ```cpp
-#define RXD2 20  // D7 on XIAO
-#define TXD2 21  // D6 on XIAO
-
-Serial2.begin(9600, SERIAL_8N1, RXD2, TXD2);
+// Use the board's D7/D6 constants (GPIO17/16), and Serial1, not Serial2:
+// the C6 has two full UARTs; Serial2 is the low-power UART.
+Serial1.begin(9600, SERIAL_8N1, D7 /* RX */, D6 /* TX */);
 ```
 
 ## Important Notes
 
-1. **XIAO labels ≠ GPIO numbers** — always use GPIO numbers in code
+1. **XIAO labels ≠ GPIO numbers** — use the `D0`–`D10` constants in code, not raw GPIO numbers
 2. **3.3V logic** — RS232-TTL module VCC must be 3.3V (not 5V)
 3. **TX/RX crossover** — ESP32 TX connects to module RX (and vice versa)
 4. **BOOT button required** — must manually enter bootloader for uploads

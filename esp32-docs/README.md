@@ -16,15 +16,16 @@ XIAO ESP32-C6 → RS232-TTL Module → Projector
 ─────────────────────────────────────────────
 3V3             → VCC
 GND             → GND
-D6 (GPIO21)     → RX (Logic In)
-D7 (GPIO20)     → TX (Logic Out)
+D6 (GPIO16)     → RXD (Logic In)
+D7 (GPIO17)     ← TXD (Logic Out)
                   DB9 Female → Projector DB9 Male
 ```
 
 **Important Pin Mapping:**
 - XIAO labeled pins ≠ GPIO numbers
-- D6 = GPIO21 (use for TX)
-- D7 = GPIO20 (use for RX)
+- D6 = GPIO16 (use for TX)
+- D7 = GPIO17 (use for RX)
+- GPIO21/20 is the XIAO **C3** mapping; older copies of these docs had it wrong
 
 ## Arduino IDE Setup
 
@@ -65,13 +66,13 @@ https://espressif.github.io/arduino-esp32/package_esp32_index.json
 
 ## Configuration
 
-### 1. Update WiFi Credentials in Arduino Sketch
+### 1. Add WiFi Credentials
 
-Edit `esp32-projector-bridge.ino`:
+Copy `esp32-projector-bridge/secrets.example.h` to `secrets.h` in the same folder (it's gitignored) and fill in:
 
 ```cpp
-const char* ssid = "YOUR_WIFI_SSID";
-const char* password = "YOUR_WIFI_PASSWORD";
+#define WIFI_SSID     "YOUR_WIFI_SSID"
+#define WIFI_PASSWORD "YOUR_WIFI_PASSWORD"
 ```
 
 ### 2. Upload and Get IP Address
@@ -168,7 +169,7 @@ Check Serial Monitor — you should see bytes being sent to the projector.
 ## How It Works
 
 1. **CamCtrlServer** sends projector command bytes via TCP to ESP32
-2. **ESP32** receives TCP packets, forwards to Serial2 (GPIO21/20)
+2. **ESP32** receives TCP packets, forwards to Serial1 (D6/D7 = GPIO16/17)
 3. **RS232-TTL module** converts 3.3V TTL signals to RS232 levels
 4. **Projector** receives RS232 commands via DB9 port
 5. Projector responses flow back through same path
@@ -177,7 +178,7 @@ The `projTcpPort.ts` wrapper makes the TCP socket behave like a serial port, so 
 
 ## Serial Settings
 
-Both ESP32 Serial2 and RS232-TTL module use:
+Both ESP32 Serial1 and the projector must use:
 - **Baud**: 9600
 - **Data**: 8 bits
 - **Parity**: None
