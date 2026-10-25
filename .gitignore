@@ -10,3 +10,6 @@ server.key
 .DS_Store
 .claude*
 winsw/
+
+# Per-sketch Wi-Fi / API credentials for ESP32 firmware
+secrets.h
