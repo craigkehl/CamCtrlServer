@@ -7,3 +7,12 @@ server.key
 .code-workspace
 
 .idea*
+.DS_Store
+.claude*
+winsw/
+
+# Per-sketch Wi-Fi / API credentials for ESP32 firmware
+secrets.h
+
+# draw.io auto-backups
+*.drawio.bkp

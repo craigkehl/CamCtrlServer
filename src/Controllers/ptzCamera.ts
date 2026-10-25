@@ -11,6 +11,27 @@ const ptzCamera = new PTZCamera();
 
 function sendUdpCommand(data: number[], res: Response, successStatus: number, successMessage: string): void {
   const udpClient = dgram.createSocket('udp4');
+  let settled = false;
+
+  const cleanup = () => { try { udpClient.close(); } catch { /* already closed */ } };
+
+  const timeout = setTimeout(() => {
+    if (settled) return;
+    settled = true;
+    cleanup();
+    console.error('Camera UDP command timed out');
+    res.status(504).send('Camera command timed out');
+  }, 5000);
+
+  udpClient.on('error', (err) => {
+    if (settled) return;
+    settled = true;
+    clearTimeout(timeout);
+    cleanup();
+    console.error('UDP error:', err);
+    res.status(500).send('Error sending command');
+  });
+
   sequenceNumber++;
   const payload = Buffer.from(data);
   const header = Buffer.alloc(8);
@@ -19,7 +40,12 @@ function sendUdpCommand(data: number[], res: Response, successStatus: number, su
   header.writeUInt16BE(payload.length, 2);
   header.writeUInt32BE(sequenceNumber, 4);
   const message = Buffer.concat([header, payload]);
+
   udpClient.send(message, CAM_PORT, CAM_IP_ADDRESS, (error) => {
+    if (settled) return;
+    settled = true;
+    clearTimeout(timeout);
+    cleanup();
     if (error) {
       console.error('Error sending command:', error);
       res.status(500).send('Error sending command');
@@ -27,7 +53,6 @@ function sendUdpCommand(data: number[], res: Response, successStatus: number, su
       console.log(successMessage);
       res.status(successStatus).json({ Message: successMessage });
     }
-    udpClient.close();
   });
 }
 
